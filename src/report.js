@@ -104,3 +104,35 @@ function junit(runs) {
 }
 
 module.exports = { pretty, json, junit, fmt };
+
+/**
+ * A shields.io "endpoint" document describing the last run.
+ *
+ * This is how the tool earns its own distribution: the badge lives in the
+ * user's README, is served from their own repository, and says something
+ * true and useful about their API rather than advertising anything.
+ */
+function badge(runs, label) {
+  let pass = 0, fail = 0, rec = 0;
+  for (const run of runs) {
+    for (const r of run.results) {
+      if (r.skipped) continue;
+      if (r.error || (r.failures && r.failures.length)) fail++;
+      else if (r.snapshot === 'recorded' || r.snapshot === 'updated') rec++;
+      else pass++;
+    }
+  }
+  const total = pass + fail + rec;
+  const message = fail
+    ? `${fail} of ${total} changed`
+    : total === 0 ? 'no requests' : `${total} passing`;
+  return {
+    schemaVersion: 1,
+    label: label || 'api',
+    message,
+    color: fail ? 'red' : total === 0 ? 'lightgrey' : 'brightgreen',
+    cacheSeconds: 300,
+  };
+}
+
+module.exports.badge = badge;

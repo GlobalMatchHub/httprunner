@@ -21,6 +21,8 @@ Options
   --reporter pretty|json|junit
   --out <file>        write the report to a file
   --no-snapshot       just run, record nothing
+  --badge <file>      write a shields.io endpoint JSON for a README badge
+  --badge-label <text>  label shown on the badge (default: api)
 
 Monitoring
   httprunner init <folder> [--env prod] [--cron '*/30 * * * *']
@@ -44,6 +46,8 @@ function parseArgs(argv) {
     else if (a === '--reporter') o.reporter = argv[++i];
     else if (a === '--out') o.out = argv[++i];
     else if (a === '--no-snapshot') o.noSnapshot = true;
+    else if (a === '--badge') o.badge = argv[++i];
+    else if (a === '--badge-label') o.badgeLabel = argv[++i];
     else if (a === '--cron') o.cron = argv[++i];
     else if (a === '--force') o.force = true;
     else if (a.startsWith('-')) { console.error(`unknown option: ${a}`); process.exit(2); }
@@ -89,6 +93,11 @@ async function main() {
       '',
       'Add HTTPRUNNER_KEY under Settings > Secrets in your repository.',
       '',
+      'The monitor also writes .http-status.json. To show it in your README:',
+      '',
+      '  ![API status](https://img.shields.io/endpoint?url=https://raw',
+      '  .githubusercontent.com/OWNER/REPO/main/.http-status.json)',
+      '',
     ].join('\n'));
     process.exit(0);
   }
@@ -105,6 +114,11 @@ async function main() {
 
   const runs = [];
   for (const f of files) runs.push(await runFile(f, o));
+
+  if (o.badge) {
+    fs.mkdirSync(path.dirname(path.resolve(o.badge)), { recursive: true });
+    fs.writeFileSync(o.badge, JSON.stringify(report.badge(runs, o.badgeLabel), null, 2) + '\n');
+  }
 
   const fn = report[o.reporter] || report.pretty;
   const { text, fail } = fn(runs);

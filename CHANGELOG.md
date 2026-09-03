@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- `--badge <file>` writes a shields.io endpoint document describing the last run
+- The generated monitor workflow keeps `.http-status.json` up to date in your
+  repository, so a README badge can show whether your API still matches what
+  was recorded
+
 ## 0.1.0
 
 First release.

@@ -45,6 +45,28 @@ This writes two GitHub Actions workflows. The scheduled one replays your
 requests and opens an issue in your repository when a response stops matching.
 No infrastructure, no third-party dashboard, no monthly platform bill.
 
+## A badge that tells the truth
+
+The monitor writes `.http-status.json` into your repository. Point a shields.io
+endpoint at it and your README shows whether the API still behaves the way it
+was recorded:
+
+```
+![API status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/OWNER/REPO/main/.http-status.json)
+```
+
+It renders as `api | 12 passing` in green, or `api | 1 of 12 changed` in red.
+
+The file is generated in your repository, served from your repository, and
+committed only when the status actually changes. Nothing is sent anywhere, and
+the badge says something about your API rather than about this tool.
+
+You can also produce it from a single run:
+
+```
+httprunner ./api --badge .http-status.json
+```
+
 ## Everything you already use keeps working
 
 - `# @name login`, and `{{login.response.body.$.token}}` to chain auth

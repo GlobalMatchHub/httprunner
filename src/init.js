@@ -43,7 +43,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -60,9 +60,22 @@ jobs:
 
       - id: run
         continue-on-error: true
-        run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt
+        run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt --badge .http-status.json
         env:
           HTTPRUNNER_KEY: \${{ secrets.HTTPRUNNER_KEY }}
+
+      # The badge lives in this repository and is served from it. Nothing is
+      # sent anywhere, and the commit only happens when the status changes.
+      - name: Update the status badge
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain .http-status.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .http-status.json
+            git commit -m "API status update"
+            git push
+          fi
 
       - name: Open an issue when the API changed
         if: steps.run.outcome == 'failure'
