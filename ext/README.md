@@ -62,7 +62,12 @@ something explicitly.
 **Sending one request stays free.** That is not going to change.
 
 Running a whole file, recording and comparing responses, CI and monitoring are
-the paid part. There is a 14 day trial.
+the paid part. There is a 14 day trial, no card and no account needed to start.
+
+**5 USD a month, or 48 USD a year. [Get a licence](https://buy.polar.sh/polar_cl_bhyPJGRKRgKFfCVvNW4J6HGJnaOv1FtYa0Wyb028jV3)**
+
+A licence is a key. Paste it into the setting, or set `HTTPRUNNER_KEY` for CI.
+There is nothing to sign up for and no telemetry.
 
 Two promises, because plenty of tools have broken them:
 

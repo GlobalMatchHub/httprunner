@@ -64,7 +64,7 @@ async function allowed() {
       return (await license.check()).ok;
     }
   } else if (pick === 'Learn more') {
-    vscode.env.openExternal(vscode.Uri.parse('https://sellerkit.dev/httprunner'));
+    vscode.env.openExternal(vscode.Uri.parse('https://buy.polar.sh/polar_cl_bhyPJGRKRgKFfCVvNW4J6HGJnaOv1FtYa0Wyb028jV3'));
   }
   return false;
 }

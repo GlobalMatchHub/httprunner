@@ -2,7 +2,7 @@
   "name": "httprunner",
   "displayName": "HTTP Runner",
   "description": "Run, test and monitor the .http files you already have. Works with your existing REST Client files.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "sellerkit",
   "engines": {
     "vscode": "^1.85.0"

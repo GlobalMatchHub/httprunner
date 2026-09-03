@@ -14,7 +14,8 @@ const path = require('path');
 const TRIAL_DAYS = 14;
 const CACHE_DAYS = 7;
 const API = process.env.HTTPRUNNER_API || 'https://api.polar.sh/v1/customer-portal/license-keys/validate';
-const ORG = process.env.HTTPRUNNER_ORG || '';
+const ORG = process.env.HTTPRUNNER_ORG || '32d3e465-b58c-4faa-a033-b284f4cb5498';
+const BUY = 'https://buy.polar.sh/polar_cl_bhyPJGRKRgKFfCVvNW4J6HGJnaOv1FtYa0Wyb028jV3';
 
 function home() {
   const d = path.join(os.homedir(), '.httprunner');
@@ -91,6 +92,7 @@ function message(r) {
       '  Your .http files and recorded responses (__http__/) are untouched and still readable.',
       '',
       '  Add your key:  export HTTPRUNNER_KEY=...',
+      `  Get one:       ${BUY}`,
       '',
     ].join('\n');
   }
