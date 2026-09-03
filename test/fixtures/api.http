@@ -4,8 +4,10 @@
 # @name login
 POST {{baseUrl}}/login
 Content-Type: application/json
+X-Api-Key: k-live-99887766
+Authorization: Bearer supersecret-abc123
 
-{ "user": "sylee" }
+{ "user": "sylee", "password": "hunter2" }
 
 ### 토큰으로 내 정보 조회
 # @expect status 200

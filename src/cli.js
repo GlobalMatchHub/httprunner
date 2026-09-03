@@ -22,6 +22,9 @@ Options
   --out <file>        write the report to a file
   --no-snapshot       just run, record nothing
   --badge <file>      write a shields.io endpoint JSON for a README badge
+  --docs <file>       write a Markdown API reference from the requests and the
+                      responses that were recorded (secrets are redacted)
+  --docs-title <text> heading for that document
   --badge-label <text>  label shown on the badge (default: api)
 
 Monitoring
@@ -47,6 +50,8 @@ function parseArgs(argv) {
     else if (a === '--out') o.out = argv[++i];
     else if (a === '--no-snapshot') o.noSnapshot = true;
     else if (a === '--badge') o.badge = argv[++i];
+    else if (a === '--docs') o.docs = argv[++i];
+    else if (a === '--docs-title') o.docsTitle = argv[++i];
     else if (a === '--badge-label') o.badgeLabel = argv[++i];
     else if (a === '--cron') o.cron = argv[++i];
     else if (a === '--force') o.force = true;
@@ -98,6 +103,9 @@ async function main() {
       '  ![API status](https://img.shields.io/endpoint?url=https://raw',
       '  .githubusercontent.com/OWNER/REPO/main/.http-status.json)',
       '',
+      'It also writes API.md, a reference generated from your requests and the',
+      'responses that came back. Secrets are redacted before anything is written.',
+      '',
     ].join('\n'));
     process.exit(0);
   }
@@ -114,6 +122,12 @@ async function main() {
 
   const runs = [];
   for (const f of files) runs.push(await runFile(f, o));
+
+  if (o.docs) {
+    const md = require('./docs').generate(files, { title: o.docsTitle });
+    fs.mkdirSync(path.dirname(path.resolve(o.docs)), { recursive: true });
+    fs.writeFileSync(o.docs, md);
+  }
 
   if (o.badge) {
     fs.mkdirSync(path.dirname(path.resolve(o.badge)), { recursive: true });

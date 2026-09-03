@@ -104,6 +104,16 @@ const show = t => console.log(t.split('\n').map(l => '    ' + l).join('\n'));
   const saved = JSON.parse(fs.readFileSync(path.join(SNAP, 'api.snap.json'), 'utf8'));
   check('죽었다고 기록을 덮어쓰지 않음', saved['login'] != null && saved['login'].status === 200, JSON.stringify(Object.keys(saved)));
 
+  console.log('\n[8] 문서 생성 - 비밀값이 절대 새면 안 된다');
+  const docs = require('../src/docs');
+  const md = docs.generate([FILE], { title: 'T' });
+  const leaks = ['hunter2', 'k-live', 'supersecret', 'Bearer T-'];
+  const found = leaks.filter(x => md.includes(x));
+  check('생성됨', md.includes('# T') && md.includes('```http'), md.slice(0, 200));
+  check('평문 비밀값이 하나도 없음', found.length === 0, '샌 것: ' + found.join(', '));
+  check('가림 표시가 실제로 들어감', md.includes('<redacted>'), md.slice(0, 400));
+  check('응답 구조가 문서에 들어감', /\*\*Response\*\* — `[0-9]{3}`/.test(md), md.slice(0, 400));
+
   console.log(failed ? `\n실패 ${failed}건` : '\n전부 통과');
   process.exit(failed ? 1 : 0);
 })();

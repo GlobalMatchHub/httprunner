@@ -67,6 +67,27 @@ You can also produce it from a single run:
 httprunner ./api --badge .http-status.json
 ```
 
+## Documentation that cannot go stale
+
+```
+httprunner ./api --docs API.md
+```
+
+This writes a Markdown API reference built from your requests and from the
+responses that were actually recorded: the method and URL, the headers, the
+request body, the status, and the shape of what came back. Because it is
+generated from real runs rather than written by hand, it cannot drift away from
+the API the way a hand-maintained document does.
+
+The generated monitor workflow keeps it current for you.
+
+**Secrets are redacted before anything is written.** `Authorization`, `Cookie`,
+any header whose name looks like a key, any value that looks like a bearer
+token, and any JSON field whose name matches `password`, `secret`, `token`,
+`api_key`, `credential` and similar are replaced with `<redacted>`. Variable
+placeholders such as `{{baseUrl}}` are left as they are, since they name a
+value rather than contain one.
+
 ## Everything you already use keeps working
 
 - `# @name login`, and `{{login.response.body.$.token}}` to chain auth

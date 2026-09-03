@@ -60,20 +60,20 @@ jobs:
 
       - id: run
         continue-on-error: true
-        run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt --badge .http-status.json
+        run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt --badge .http-status.json --docs API.md
         env:
           HTTPRUNNER_KEY: \${{ secrets.HTTPRUNNER_KEY }}
 
       # The badge lives in this repository and is served from it. Nothing is
       # sent anywhere, and the commit only happens when the status changes.
-      - name: Update the status badge
+      - name: Update the status badge and API reference
         if: always()
         run: |
-          if [ -n "$(git status --porcelain .http-status.json)" ]; then
+          if [ -n "$(git status --porcelain .http-status.json API.md)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add .http-status.json
-            git commit -m "API status update"
+            git add .http-status.json API.md
+            git commit -m "Update API status and reference"
             git push
           fi
 

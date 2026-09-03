@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+- `--docs <file>` writes a Markdown API reference generated from the requests
+  and the responses that were recorded, so the document cannot drift away from
+  the API
+- Secrets are redacted before anything is written: auth headers, key-shaped
+  header names, bearer-shaped values, and JSON fields named like credentials
+- The generated monitor workflow keeps `API.md` current alongside the badge
+
 ## 0.2.0
 
 - `--badge <file>` writes a shields.io endpoint document describing the last run
