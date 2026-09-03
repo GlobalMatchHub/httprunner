@@ -20,12 +20,19 @@ Options
   --timeout <ms>      default 30000
   --reporter pretty|json|junit
   --out <file>        write the report to a file
+  --text-out <file>   also write the plain terminal report, whatever --reporter
+                      is set to, so one run can feed both a machine and a human
   --no-snapshot       just run, record nothing
   --badge <file>      write a shields.io endpoint JSON for a README badge
   --docs <file>       write a Markdown API reference from the requests and the
                       responses that were recorded (secrets are redacted)
   --docs-title <text> heading for that document
   --badge-label <text>  label shown on the badge (default: api)
+
+Bringing in what you already have
+  httprunner import <postman-or-insomnia-export.json> [-o api.http]
+    Reads a Postman v2.1 collection or an Insomnia v4 export and writes plain
+    .http files. Variables are collected and left blank at the top.
 
 Monitoring
   httprunner init <folder> [--env prod] [--cron '*/30 * * * *']
@@ -50,6 +57,7 @@ function parseArgs(argv) {
     else if (a === '--out') o.out = argv[++i];
     else if (a === '--no-snapshot') o.noSnapshot = true;
     else if (a === '--badge') o.badge = argv[++i];
+    else if (a === '--text-out') o.textOut = argv[++i];
     else if (a === '--docs') o.docs = argv[++i];
     else if (a === '--docs-title') o.docsTitle = argv[++i];
     else if (a === '--badge-label') o.badgeLabel = argv[++i];
@@ -86,6 +94,25 @@ function walk(dir) {
 
 async function main() {
   const argv = process.argv.slice(2);
+  if (argv[0] === 'import') {
+    const rest = argv.slice(1);
+    const src = rest.find(x => !x.startsWith('-'));
+    const oi = rest.indexOf('-o') >= 0 ? rest.indexOf('-o') : rest.indexOf('--out');
+    const dest = oi >= 0 ? rest[oi + 1] : null;
+    if (!src) { console.error('usage: httprunner import <postman-or-insomnia-export.json> [-o api.http]'); process.exit(2); }
+    let r;
+    try { r = require('./import').importFile(path.resolve(src)); }
+    catch (e) { console.error(`could not import ${src}: ${e.message}`); process.exit(2); }
+    if (dest) {
+      fs.mkdirSync(path.dirname(path.resolve(dest)), { recursive: true });
+      fs.writeFileSync(dest, r.text);
+      console.log(`  ${r.count} request${r.count === 1 ? '' : 's'} from your ${r.kind} export -> ${dest}`);
+      console.log('  Variables were left blank at the top of the file. Fill them in, or');
+      console.log('  put the secret ones in http-client.private.env.json and gitignore it.');
+    } else process.stdout.write(r.text);
+    process.exit(0);
+  }
+
   if (argv[0] === 'init') {
     const o = parseArgs(argv.slice(1));
     const written = require('./init').init(process.cwd(), { dir: o.files[0] || '.', env: o.env, cron: o.cron, force: o.force });
@@ -132,6 +159,14 @@ async function main() {
   if (o.badge) {
     fs.mkdirSync(path.dirname(path.resolve(o.badge)), { recursive: true });
     fs.writeFileSync(o.badge, JSON.stringify(report.badge(runs, o.badgeLabel), null, 2) + '\n');
+  }
+
+  if (o.textOut) {
+    const prev = process.env.NO_COLOR;
+    process.env.NO_COLOR = '1';
+    fs.mkdirSync(path.dirname(path.resolve(o.textOut)), { recursive: true });
+    fs.writeFileSync(o.textOut, report.pretty(runs).text + '\n');
+    if (prev === undefined) delete process.env.NO_COLOR; else process.env.NO_COLOR = prev;
   }
 
   const fn = report[o.reporter] || report.pretty;

@@ -13,6 +13,10 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   http:
     runs-on: ubuntu-latest
@@ -23,7 +27,7 @@ jobs:
           node-version: 20
       - name: Get httprunner
         run: curl -fsSL https://github.com/GlobalMatchHub/httprunner/releases/latest/download/httprunner.tgz | tar xz
-      - run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter junit --out reports/http.xml
+      - run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter junit --out reports/http.xml --text-out reports/http.txt
         env:
           HTTPRUNNER_KEY: \${{ secrets.HTTPRUNNER_KEY }}
       - uses: actions/upload-artifact@v4
@@ -31,6 +35,23 @@ jobs:
         with:
           name: http-report
           path: reports/http.xml
+
+      # On a pull request, say what changed where the reviewers already are.
+      - name: Comment on the pull request when a response changed
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '';
+            try { body = fs.readFileSync('reports/http.txt', 'utf8'); } catch (e) {}
+            if (!body) return;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: ['**API responses changed in this pull request.**', '',
+                     '\`\`\`', body.slice(0, 60000), '\`\`\`'].join('\\n'),
+            });
 `;
 }
 

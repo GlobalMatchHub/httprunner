@@ -88,6 +88,28 @@ token, and any JSON field whose name matches `password`, `secret`, `token`,
 placeholders such as `{{baseUrl}}` are left as they are, since they name a
 value rather than contain one.
 
+## Bringing in what you already have
+
+```
+httprunner import postman-collection.json -o api.http
+```
+
+Reads a **Postman v2.1** collection or an **Insomnia v4** export and writes
+plain `.http` files: folders become request titles, `{{variables}}` are
+collected and left blank at the top of the file, bearer auth becomes an
+`Authorization` header, and form bodies get the content type Postman leaves
+implicit.
+
+Nothing is uploaded anywhere. The conversion happens on your machine, and the
+result is a text file you can read, diff and commit.
+
+## Reviewers see what changed
+
+The generated CI workflow comments on a pull request when a response no longer
+matches what was recorded, with the same diff you would see in the terminal.
+The people reviewing the change find out on the change, rather than after it
+ships.
+
 ## Everything you already use keeps working
 
 - `# @name login`, and `{{login.response.body.$.token}}` to chain auth

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- `httprunner import` converts a Postman v2.1 collection or an Insomnia v4
+  export into plain `.http` files, entirely on your machine
+- `--text-out <file>` writes the terminal report alongside any other reporter,
+  so one run can feed both a machine and a human
+- The generated CI workflow comments on a pull request when a response changed
+
 ## 0.3.0
 
 - `--docs <file>` writes a Markdown API reference generated from the requests
