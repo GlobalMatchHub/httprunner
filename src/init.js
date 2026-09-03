@@ -21,7 +21,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npx @sellerkit/httprunner ${dir} ${env ? `--env ${env} ` : ''}--reporter junit --out reports/http.xml
+      - name: Get httprunner
+        run: curl -fsSL https://github.com/GlobalMatchHub/httprunner/releases/latest/download/httprunner.tgz | tar xz
+      - run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter junit --out reports/http.xml
         env:
           HTTPRUNNER_KEY: \${{ secrets.HTTPRUNNER_KEY }}
       - uses: actions/upload-artifact@v4
@@ -53,9 +55,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Get httprunner
+        run: curl -fsSL https://github.com/GlobalMatchHub/httprunner/releases/latest/download/httprunner.tgz | tar xz
+
       - id: run
         continue-on-error: true
-        run: npx @sellerkit/httprunner ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt
+        run: node httprunner/src/cli.js ${dir} ${env ? `--env ${env} ` : ''}--reporter pretty --out reports/monitor.txt
         env:
           HTTPRUNNER_KEY: \${{ secrets.HTTPRUNNER_KEY }}
 
@@ -73,7 +78,7 @@ jobs:
             });
             const text = ['The monitored requests no longer match the recorded responses.',
               '', '\`\`\`', body.slice(0, 60000), '\`\`\`',
-              '', 'Run \`npx @sellerkit/httprunner ${dir} --update\` to accept the new responses.'].join('\\n');
+              '', 'Run it again with --update to accept the new responses.'].join('\\n');
             if (open.data.length) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner, repo: context.repo.repo,
