@@ -1,0 +1,18 @@
+# Point this at any API and press Send above a request.
+# The first run records the response; later runs report only what changed.
+
+@baseUrl = https://httpbin.org
+
+### Simple GET
+GET {{baseUrl}}/get?hello=world
+
+### POST some JSON
+# @name create
+POST {{baseUrl}}/post
+Content-Type: application/json
+
+{ "title": "example", "n": {{$randomInt 1 100}} }
+
+### Reuse a value from the response above
+# @expect status 200
+GET {{baseUrl}}/get?echo={{create.response.body.$.json.title}}

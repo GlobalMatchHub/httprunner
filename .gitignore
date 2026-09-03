@@ -1,0 +1,5 @@
+node_modules/
+ext/core/
+ext/*.vsix
+test/fixtures/__http__/
+__http__/

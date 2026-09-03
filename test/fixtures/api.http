@@ -1,0 +1,20 @@
+@baseUrl = http://127.0.0.1:{{PORT}}
+
+### 로그인해서 토큰 받기
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{ "user": "sylee" }
+
+### 토큰으로 내 정보 조회
+# @expect status 200
+# @expect body $.name exists
+GET {{baseUrl}}/me
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 보낸 걸 그대로 돌려받기
+POST {{baseUrl}}/echo
+Content-Type: application/json
+
+{ "hello": "{{$processEnv USER}}" }

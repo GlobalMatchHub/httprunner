@@ -1,0 +1,118 @@
+{
+  "name": "httprunner",
+  "displayName": "HTTP Runner",
+  "description": "Run, test and monitor the .http files you already have. Works with your existing REST Client files.",
+  "version": "0.1.0",
+  "publisher": "sellerkit",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Testing",
+    "Other"
+  ],
+  "keywords": [
+    "rest client",
+    "http client",
+    "api",
+    "rest",
+    "http",
+    "testing"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onLanguage:http",
+    "workspaceContains:**/*.http",
+    "workspaceContains:**/*.rest"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "http",
+        "extensions": [
+          ".http",
+          ".rest"
+        ],
+        "aliases": [
+          "HTTP"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "httprunner.send",
+        "title": "Send Request",
+        "category": "HTTP Runner"
+      },
+      {
+        "command": "httprunner.runFile",
+        "title": "Run All Requests in File",
+        "category": "HTTP Runner"
+      },
+      {
+        "command": "httprunner.updateFile",
+        "title": "Accept Current Responses",
+        "category": "HTTP Runner"
+      },
+      {
+        "command": "httprunner.initCi",
+        "title": "Set Up CI and Monitoring",
+        "category": "HTTP Runner"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "httprunner.runFile",
+          "when": "resourceExtname =~ /\\.(http|rest)/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "HTTP Runner",
+      "properties": {
+        "httprunner.environment": {
+          "type": "string",
+          "default": "",
+          "description": "Environment name to use from http-client.env.json"
+        },
+        "httprunner.assert": {
+          "type": "string",
+          "enum": [
+            "shape",
+            "exact",
+            "off"
+          ],
+          "default": "shape",
+          "description": "How to compare responses. \"shape\" compares structure, not values, so changing ids and tokens do not raise false alarms."
+        },
+        "httprunner.timeout": {
+          "type": "number",
+          "default": 30000,
+          "description": "Request timeout in milliseconds"
+        },
+        "httprunner.licenseKey": {
+          "type": "string",
+          "default": "",
+          "description": "License key"
+        }
+      }
+    }
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#141A26",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GlobalMatchHub/httprunner"
+  },
+  "pricing": "Trial",
+  "bugs": {
+    "url": "https://github.com/GlobalMatchHub/httprunner/issues"
+  },
+  "homepage": "https://github.com/GlobalMatchHub/httprunner#readme",
+  "license": "SEE LICENSE IN LICENSE"
+}
