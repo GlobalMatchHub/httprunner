@@ -1,6 +1,23 @@
 HTTP Runner
 Copyright (c) 2026 sellerkit
 
+English translation. If the English and the Korean text below differ, the Korean
+text prevails.
+
+Sending individual requests from the editor is free to use.
+
+Running a whole file, recording and comparing responses, CI integration and
+scheduled monitoring need a valid licence key to keep using. The trial lasts
+14 days.
+
+When the trial ends or a licence expires, the .http files you already made and
+the recorded response files (__http__/) stay readable and usable. They are not
+locked.
+
+This software is provided as is, without any warranty, express or implied.
+
+---
+
 편집기에서 요청을 개별적으로 보내는 기능은 자유롭게 사용할 수 있습니다.
 
 파일 전체 실행, 응답 기록과 비교, CI 연동, 예약 감시 기능은 유효한 라이선스 키가
