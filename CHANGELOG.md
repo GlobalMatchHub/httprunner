@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.5
+
+- The command-line examples pointed at an npm package that was never published, so
+  copying them failed. They now run straight from the repository:
+  `npx github:GlobalMatchHub/httprunner`. The GitHub Actions workflows written by
+  `init` were not affected; they download the release archive.
+- A licence key bought for another of our tools no longer unlocks this one.
+
 ## 0.4.0
 
 - `httprunner import` converts a Postman v2.1 collection or an Insomnia v4

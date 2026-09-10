@@ -1,8 +1,8 @@
 {
   "name": "httprunner",
-  "displayName": "HTTP Runner",
-  "description": "Run, test and monitor the .http files you already have. Works with your existing REST Client files.",
-  "version": "0.4.0",
+  "displayName": "HTTP Client Runner",
+  "description": "An HTTP client for the .http files you already have. Send one request, or run the whole file and be told only what changed. Works with your existing REST Client files.",
+  "version": "0.5.5",
   "publisher": "sellerkit",
   "engines": {
     "vscode": "^1.85.0"
@@ -12,12 +12,18 @@
     "Other"
   ],
   "keywords": [
-    "rest client",
     "http client",
-    "api",
-    "rest",
+    "rest client",
+    "api client",
+    "api testing",
     "http",
-    "testing"
+    "rest",
+    "api",
+    "testing",
+    "openapi",
+    ".http",
+    "http file",
+    "api request"
   ],
   "main": "./src/extension.js",
   "activationEvents": [

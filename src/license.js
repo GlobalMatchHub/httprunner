@@ -15,6 +15,8 @@ const TRIAL_DAYS = 14;
 const CACHE_DAYS = 7;
 const API = process.env.HTTPRUNNER_API || 'https://api.polar.sh/v1/customer-portal/license-keys/validate';
 const ORG = process.env.HTTPRUNNER_ORG || '32d3e465-b58c-4faa-a033-b284f4cb5498';
+// This product's own licence benefit. Keys for our other tools must not open this one.
+const BENEFIT = process.env.HTTPRUNNER_BENEFIT || '61e30f34-8d30-41f4-936b-e5ec7db259cd';
 const BUY = 'https://buy.polar.sh/polar_cl_bhyPJGRKRgKFfCVvNW4J6HGJnaOv1FtYa0Wyb028jV3';
 
 function home() {
@@ -71,6 +73,11 @@ async function check() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body = await res.json().catch(() => ({}));
     if (body && body.status && body.status !== 'granted') return { ok: false, reason: 'invalid' };
+    // The organization sells several tools. Without this check a key for any of
+    // them would unlock this one, so a $3 licence would open a $5 product.
+    if (BENEFIT && body && body.benefit_id && String(body.benefit_id) !== BENEFIT) {
+      return { ok: false, reason: 'wrong-product' };
+    }
     state.validKey = key; state.validAt = Date.now(); writeState(state);
     return { ok: true };
   } catch {
@@ -95,6 +102,10 @@ function message(r) {
       `  Get one:       ${BUY}`,
       '',
     ].join('\n');
+  }
+  if (r.reason === 'wrong-product') {
+    return '\nThat key belongs to a different product of ours, not HTTP Client Runner.\n'
+      + `  Get one here: ${BUY}\n`;
   }
   return '\nThat license key was not accepted. Check HTTPRUNNER_KEY.\n';
 }

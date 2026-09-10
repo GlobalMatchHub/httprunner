@@ -1,4 +1,4 @@
-# HTTP Runner
+# HTTP Client Runner
 
 Run, test and monitor the `.http` files you already have.
 
@@ -30,7 +30,7 @@ beside it as a normal editor tab, so it is searchable and diffable.
 **In CI.** The same files become a regression suite.
 
 ```
-npx @sellerkit/httprunner ./api --reporter junit --out reports/http.xml
+npx github:GlobalMatchHub/httprunner ./api --reporter junit --out reports/http.xml
 ```
 
 Exits non-zero when something changed, so a pull request can be blocked.
@@ -38,7 +38,7 @@ Exits non-zero when something changed, so a pull request can be blocked.
 **As a monitor, with no server to host.**
 
 ```
-npx @sellerkit/httprunner init ./api --cron '*/30 * * * *'
+npx github:GlobalMatchHub/httprunner init ./api --cron '*/30 * * * *'
 ```
 
 This writes two GitHub Actions workflows. The scheduled one replays your
